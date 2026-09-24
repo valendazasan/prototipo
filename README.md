@@ -1,30 +1,37 @@
-# Bogotá Transparente — Prototipo (Mapa Interactivo)
+# Bogotá Transparente
 
-Prototipo funcional (MVP) de la fase de Prototipar (Scrum) del proyecto de transparencia en el uso de recursos públicos.
+Plataforma web con mapa interactivo para conocer cómo usan los recursos públicos las 20 alcaldías locales de Bogotá (Fondos de Desarrollo Local), con datos oficiales y actualizados.
 
-## Qué es
-Página web estática de una sola vista (`index.html`), sin backend: los datos de proyectos y presupuestos están de ejemplo dentro del propio archivo, pensados para demostrar la navegación real del producto (mapa → detalle de localidad → proyectos → participación ciudadana).
+## De dónde salen los datos
 
-## Cómo publicarlo gratis con GitHub Pages
+La página consulta **en vivo**, cada vez que se abre, la API pública de **SECOP II – Contratos Electrónicos** (Colombia Compra Eficiente, `datos.gov.co`, recurso `jbjy-vk9h`). No hay cifras inventadas ni guardadas en el código: lo que se ve es lo que SECOP II tiene publicado en ese momento.
 
-1. Crea un repositorio nuevo en GitHub (puede ser público o privado si tienen GitHub Pro/Team; Pages gratis requiere repo público).
-2. Sube este archivo `index.html` (y este `README.md` si quieren) a la raíz del repo.
-   - Desde la web de GitHub: botón **Add file → Upload files**, arrastra `index.html`, y dale **Commit changes**.
-   - O desde terminal:
-     ```
-     git init
-     git add index.html README.md
-     git commit -m "Prototipo mapa interactivo"
-     git branch -M main
-     git remote add origin https://github.com/TU-USUARIO/TU-REPO.git
-     git push -u origin main
-     ```
-3. En el repo, ve a **Settings → Pages**.
-4. En "Build and deployment", selecciona **Deploy from a branch**, rama `main`, carpeta `/ (root)`, y guarda.
-5. Espera 1-2 minutos. GitHub te dará el link público, normalmente:
-   `https://TU-USUARIO.github.io/TU-REPO/`
+- **Contratado:** suma de `valor_del_contrato` de los contratos firmados en el año por la entidad de cada localidad.
+- **Pagado:** suma de `valor_pagado` de esos contratos.
+- **% pagado (ejecución financiera):** pagado ÷ contratado.
+- **Localidad:** se asigna por el nombre de la entidad contratante (p. ej. "Fondo de Desarrollo Local de Kennedy").
+- **Mapa:** límites oficiales de las 20 localidades de IDECA, simplificados y embebidos en `index.html`.
 
-Ese link ya es la página real, y cualquier compañero del equipo con acceso de escritura al repo puede seguir editando `index.html` y hacer push — Pages se actualiza sola con cada commit a `main`.
+Limitaciones (también explicadas en la página, sección *Datos abiertos*): SECOP II no publica avance físico de obra; solo aparecen contratos firmados por las alcaldías locales (no los de IDU, Secretarías, etc.); y solo lo que la entidad haya publicado en SECOP II.
 
-## Cómo editar los datos
-Todos los datos de las localidades (presupuesto, % de ejecución, proyectos destacados) están en el arreglo `localidades` dentro de la etiqueta `<script>` al final de `index.html`. No hay que tocar el HTML ni el CSS para cambiar cifras — solo ese bloque de JavaScript.
+## Qué hace cada sección
+
+- **Inicio / Mapa:** mapa con D3 (*zoom to bounding box*), buscador de localidad, selector de año, indicadores de la ciudad y panel por localidad (Resumen, Proyectos, Participa).
+- **Proyectos:** tabla de todos los contratos con filtros (localidad, año, texto, tipo, estado), orden por columna, paginación, enlace al expediente en SECOP II y descarga CSV.
+- **Datos abiertos:** fuentes, metodología, la consulta exacta a la API y descarga del resumen por localidad.
+- **Sobre el proyecto:** problema, usuaria y proceso (Design Thinking + Scrum).
+- **Reportes ciudadanos:** se guardan en el navegador de quien los hace (`localStorage`) y se pueden copiar para radicarlos en **Bogotá Te Escucha**, el canal oficial del Distrito. Como la página es estática (sin servidor), los reportes no se comparten entre usuarios.
+
+## Publicarla con GitHub Pages
+
+1. Sube `index.html` (y este `README.md`) a la raíz de un repositorio público.
+2. En el repo: **Settings → Pages → Deploy from a branch →** rama `main`, carpeta `/ (root)` → **Save**.
+3. En 1–2 minutos queda en `https://TU-USUARIO.github.io/TU-REPO/`.
+
+Cualquier compañero con permiso de escritura puede editar `index.html` y hacer push; Pages se actualiza sola.
+
+También se puede probar sin publicar: basta con abrir `index.html` en el navegador con conexión a internet.
+
+## Si algo no carga
+
+La barra de estado bajo el título muestra si la conexión con datos.gov.co funcionó. Si falla, el botón **Actualizar** reintenta. La consulta a la API se puede abrir directamente desde *Datos abiertos → Abrir la consulta a la API* para ver la respuesta cruda.
